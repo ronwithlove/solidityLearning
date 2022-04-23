@@ -9,6 +9,7 @@ contract Modifier {
         paused = _paused;
     }
 
+    //使用modifier
     modifier whenNotPaused() {
         require(!paused, "paused");
         _; //其他函数运行的位置，这里表示在require之后运行
