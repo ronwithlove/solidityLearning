@@ -28,10 +28,10 @@ contract Call {
 
     function callFoo(address _test) external payable {
         //测试一，这个情况会失败，因为我们这里指定5000gas 是不够修改2个变量的
-        (bool success, bytes memory _data) = _test.call{value: 1, gas: 5000}(
+        //(bool success, bytes memory _data) = _test.call{value: 1, gas: 5000}(
         //测试二会通过
-        //(bool success, bytes memory _data) = _test.call{value: 1}(
-            abi.encodeWithSignature("foo(string,uint256)", "call foo", 123)
+        (bool success, bytes memory _data) = _test.call{value: 1}( //value为1就是调用这个方法同时也需要传入至少1个主币
+            abi.encodeWithSignature("foo(string,uint256)", "call foo", 123) //"call foo"和"123"就是要传入的两个变量
         );
         require(success, "call failed");
         data = _data;
