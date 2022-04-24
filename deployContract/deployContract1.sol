@@ -4,7 +4,7 @@ pragma solidity ^0.8.7;
 contract Proxy {
     event Deploy(address);
 
-    fallback() external payable {} //代理合约可能会收到主逼，所以要增加一个回退函数来接收主币，要不然会出错
+    fallback() external payable {} //代理合约可能会收到主币，所以要增加一个回退函数来接收主币，要不然会出错
 
     function deploy(bytes memory _code) external payable returns (address) {
         address addr;
