@@ -17,7 +17,7 @@ contract SendEther {
     }
 
     function useCall(address payable _to) external payable {
-        //语法和前面两个有点不同
+        //语法和前面两个有点不同，call可以使用低级调用，转钱的同时也可以调用目标合约的函数
         //(bool success, bytes memory data) = _to.call{value: 123}(""); //""这里是填写需要发送的数据
         //先不接收data数据
         (bool success, ) = _to.call{value: 123}("");
