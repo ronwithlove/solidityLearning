@@ -17,6 +17,7 @@ contract RonToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     address public artist; //royalty fee reciver
     address public txFeeToken; //royalty token type
     uint256 public txFeeAmount; //royalty fee
+    mapping(address => bool) public excludedList;
 
     constructor(
         address _artist,
@@ -26,6 +27,7 @@ contract RonToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         artist = _artist;
         txFeeToken = _txFeeToken;
         txFeeAmount = _txFeeAmount;
+        excludedList[_artist] = true; //添加artist到白名单
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
@@ -87,6 +89,12 @@ contract RonToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         return super.supportsInterface(interfaceId);
     }
 
+    function setExcluded(address excluded, bool status) external {
+        //设置白名单
+        require(msg.sender == artist, "artist only");
+        excludedList[excluded] = status;
+    }
+
     function transferFrom(
         address from,
         address to,
@@ -96,7 +104,9 @@ contract RonToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
             _isApprovedOrOwner(_msgSender(), tokenId),
             "ERC721: transfer caller is not owner nor approved"
         );
-        _payTxFee(from);
+        if (excludedList[from] == false) {
+            _payTxFee(from);
+        }
         _transfer(from, to, tokenId);
     }
 
@@ -105,7 +115,9 @@ contract RonToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         address to,
         uint256 tokenId
     ) public override {
-        _payTxFee(from);
+        if (excludedList[from] == false) {
+            _payTxFee(from);
+        }
         safeTransferFrom(from, to, tokenId, "");
     }
 
@@ -119,7 +131,9 @@ contract RonToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
             _isApprovedOrOwner(_msgSender(), tokenId),
             "ERC721: transfer caller is not owner nor approved"
         );
-        _payTxFee(from);
+        if (excludedList[from] == false) {
+            _payTxFee(from);
+        }
         _safeTransfer(from, to, tokenId, _data);
     }
 
